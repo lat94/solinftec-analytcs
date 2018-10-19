@@ -8,6 +8,7 @@ import history from './service/router/History';
 import PrivateContainer from './service/router/PrivateContainer';
 import Login from './box/Login';
 
+
 injectTapEventPlugin(); 
 
 const PrivateRoute = ({ component: Component, ...rest }) => (

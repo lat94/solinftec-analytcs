@@ -8,16 +8,7 @@ class TemplateRepositoryService {
 
     getApiUrl() {
         return HttpService.getApiUrl();
-    }
-
-    getLoggerUrl() {
-        return HttpService.getLoggerUrl();
-    }
-
-    getLogs() {
-        return HttpService.make().get(this.uri);
-
-    }
+    }   
 
     getAll() {
         return HttpService.make().get(this.uri);

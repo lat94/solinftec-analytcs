@@ -68,7 +68,7 @@ class Login extends Component {
         return(
                 <div  style={{width: '30%', margin: 'auto', textAlign: 'center', paddingTop: '2%'}}>
                
-                <h3 className="title">Welcome to Alice Voice</h3>
+                <h3 className="title">Welcome to Solinftec Analytcs</h3>
 
                 <div className="home-logo"/>
 

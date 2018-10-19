@@ -11,8 +11,13 @@ class TemplateLoggerSevice {
     }
 
     getAll() {
-        return HttpService.make().get(this.uri);
+        return HttpService.make(this.getLoggerUrl()).get(this.uri);
     }
+
+
+    /*getBy(filter) {
+        return HttpService.make().post(this.uri, data);
+    }*/
 
     save(data) {
         return HttpService.make().post(this.uri, data);

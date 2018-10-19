@@ -1,6 +1,6 @@
 import history from '../../service/router/History';
 const API_URL = "http://localhost:4212/v1";
-const LOGGER_URL = "https://sgpa-logger-api.saas-solinftec.com/"
+const LOGGER_URL = "https://sgpa-logger-api.saas-solinftec.com"
 
 /**
  * Abstraction of the ~GenericHttpRequest~ for each existing url
@@ -96,8 +96,7 @@ class GenericHttpRequest {
         let token = localStorage.getItem('auth-token');
         return new Headers({
             'Content-type': 'application/json;charset=UTF-8',
-            'x-auth-token': token,
-            'x-github-event': 'manual-build'
+            'x-auth-token': token
         });
     };
 }
