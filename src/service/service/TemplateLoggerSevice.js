@@ -1,22 +1,13 @@
 import HttpService from '../http/HttpService';
 
-class TemplateRepositoryService {
+class TemplateLoggerSevice {
     constructor(uri) {
         this.uri = uri;
         this.storageKey = 'stg-' + uri.replace('/', '');
-    }
-
-    getApiUrl() {
-        return HttpService.getApiUrl();
-    }
+    }   
 
     getLoggerUrl() {
         return HttpService.getLoggerUrl();
-    }
-
-    getLogs() {
-        return HttpService.make().get(this.uri);
-
     }
 
     getAll() {
@@ -40,4 +31,4 @@ class TemplateRepositoryService {
         return HttpService.make().deleteOne(this.uri + '/' + id);
     }
 }
-export default TemplateRepositoryService;
+export default TemplateLoggerSevice;

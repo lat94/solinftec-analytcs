@@ -1,16 +1,17 @@
 import history from '../../service/router/History';
 const API_URL = "http://localhost:4212/v1";
+const LOGGER_URL = "https://sgpa-logger-api.saas-solinftec.com/"
 
 /**
  * Abstraction of the ~GenericHttpRequest~ for each existing url
  */
 class HttpService {
 
-    static make = () =>
+    static make = (url) =>
     {
         if(!this.HTTP_SERVICE_INSTANCE)
         {
-            this.HTTP_SERVICE_INSTANCE = new GenericHttpRequest(API_URL);
+            this.HTTP_SERVICE_INSTANCE = new GenericHttpRequest(url);
         }
         return this.HTTP_SERVICE_INSTANCE;
     };
@@ -19,6 +20,10 @@ class HttpService {
     {
         return  API_URL;
     };
+
+    static getLoggerUrl = () => {
+        return LOGGER_URL;
+    }
 
 }
 export default HttpService;

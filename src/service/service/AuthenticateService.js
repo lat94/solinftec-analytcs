@@ -1,4 +1,3 @@
-
 import Auth from 'solinftec-auth-lib'
  
 class AuthenticateService
