@@ -1,0 +1,72 @@
+.link-routes
+{
+    text-decoration: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+}
+
+p {
+    font-family: 'Roboto';
+    font-weight: 300;
+    text-align: justify;
+}
+
+.title{
+    font-family: 'Roboto';
+    font-weight: 300;
+    text-align: center;
+}
+
+.home-logo {
+    background-image: url("./../img/alice-logo.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 170px;
+    height: 170px;
+    text-align: center;
+    margin: auto;
+}
+
+.voice-logo {
+    background-image: url("./../img/alice-logo.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    margin: auto;
+}
+
+.home-ysnp {
+    background-image: url("./../img/ysnp.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 230px;
+    height: 190px;
+    text-align: center;
+    margin: auto;
+}
+
+.alien {
+    background-image: url("./../img/alien.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    margin: auto;
+}
+
+.alien-not-found {
+    background-image: url("./../img/alien.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    margin: auto;
+}
