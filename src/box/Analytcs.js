@@ -6,6 +6,9 @@ import router from '../service/router/History';
 import ChartBar from '../service/component/ChartBar';
 import LoggerService from '../service/service/LoggerService';
 import _ from 'lodash';
+import DoughnutBar from '../service/component/DoughnutBar';
+//import Select from '@material-ui/core/Select';
+
 
 class Analytcs extends Component {
 
@@ -13,7 +16,7 @@ class Analytcs extends Component {
         super(props);
         this.state = {
             bar: null,
-            multBar: null
+            doughnut: null
         }
     };
 
@@ -23,32 +26,45 @@ class Analytcs extends Component {
             .then(r => {
                 this.setState({ logs: r })
                 this.getChartBarData();
-            })
+                this.getChartDoughnutData();
+                //this.getChartMultBarData();
+            });
+    };
 
-        LoggerService.getAllLogs()
-            .then(r => {
-                this.setState({ logs: r })
-                this.getChartMultBarData();
-            })
-
+    _dynamicColors = () => {
+        let rgba;
+        let r = Math.floor(Math.random() * 255);
+        let g = Math.floor(Math.random() * 255);
+        let b = Math.floor(Math.random() * 255);
+        let a = 0.7;
+        rgba = `rgba(${r},${g},${b},${a})`;
+        console.log(rgba);
+        return rgba;
 
     };
 
+    _setColors = (c) => {
+        debugger;
+        let colors = [];
+        for (let index = 0; index < c; index++) {
+            colors.push(this._dynamicColors());
+        }
+        return colors;
+    }
 
     //single dataset
     getChartBarData() {
         //call the endpoint
         let filter = "";
 
-        let owner = Array.from(new Set(this.state.logs.map(item => item.owner)));
-        debugger;
+        let owners = Array.from(new Set(this.state.logs.map(item => item.owner)));
         let values = []
-        owner.map(it => values.push(this.state.logs.filter(value => value.owner == it).length))
+        owners.map(it => values.push(this.state.logs.filter(value => value.owner == it).length))
 
 
         let data =
         {
-            labels: owner,
+            labels: owners,
             //add more dataset to have more bars (i.e. for each process)
             datasets: [
                 {
@@ -62,7 +78,7 @@ class Analytcs extends Component {
 
 
         let chart = <ChartBar
-            chartData={data}
+            barData={data}
             text="Frequência por owner"
             legendPosition="bottom"
             color='rgba(95, 174, 95, 0.6)'
@@ -72,41 +88,40 @@ class Analytcs extends Component {
         this.setState({ bar: chart })
     }
 
-    //mult dataset
-    getChartMultBarData() {
+    //single dataset
+    getChartDoughnutData() {
         //call the endpoint
         let filter = "";
 
-        let owner = Array.from(new Set(this.state.logs.map(item => item.owner)));
+        let processes = Array.from(new Set(this.state.logs.map(item => item.process)));
         debugger;
         let values = []
-        owner.map(it => values.push(this.state.logs.filter(value => value.owner == it).length))
-
+        processes.map(it => values.push(this.state.logs.filter(value => value.process == it).length));
+        let colors = this._setColors(values.length);
 
         let data =
         {
-            labels: owner,
+            labels: processes,
             //add more dataset to have more bars (i.e. for each process)
             datasets: [
                 {
                     //label: 'Population',
                     data: values,
-                    backgroundColor: 'rgba(95, 174, 95, 0.6)'
+                    backgroundColor: colors
 
                 }
             ]
         }
 
 
-        let chart = <ChartBar
-            chartData={data}
-            text="Frequência por owner"
+        let chart = <DoughnutBar
+            doughnutData={data}
+            text="Processo mais acessado"
             legendPosition="bottom"
             color='rgba(95, 174, 95, 0.6)'
-            backgroundColor='rgba(95, 174, 95, 0.6)'
         />
 
-        this.setState({ multBar: chart })
+        this.setState({ doughnut: chart })
     }
 
     render() {
@@ -115,12 +130,12 @@ class Analytcs extends Component {
                 <div className="App-header">
                 </div>
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
-                    <div style={{ width: 600, flex: 1, display: 'inline-block' }}>
+                    <div id='barChart'  style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         {this.state.bar}
                     </div>
-                    <div style={{ width: 600, flex: 1, display: 'inline-block' }}>
-                        {this.state.multBar}
-                    </div>
+                    <div id="doughnutChart" style={{ marginLeft: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                        {this.state.doughnut}
+                    </div>                   
                 </div>
 
 
