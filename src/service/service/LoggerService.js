@@ -3,7 +3,7 @@ class LoggerService
 {
     constructor(){
         const uriLogger = "/logger";
-        //this.uriLoggerFilter = `${uriLogger}/filter`;
+        const uriLoggerFilter = `${uriLogger}/filter`;
 
         this.templateLogger = new TemplateLoggerSevice(uriLogger);
     }

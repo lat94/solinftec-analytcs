@@ -7,7 +7,8 @@ import ChartBar from '../service/component/ChartBar';
 import LoggerService from '../service/service/LoggerService';
 import _ from 'lodash';
 import DoughnutBar from '../service/component/DoughnutBar';
-//import Select from '@material-ui/core/Select';
+import MultBar from '../service/component/MultBar';
+import SelectField from 'material-ui/SelectField';
 
 
 class Analytcs extends Component {
@@ -16,7 +17,8 @@ class Analytcs extends Component {
         super(props);
         this.state = {
             bar: null,
-            doughnut: null
+            doughnut: null,
+            multBar: null
         }
     };
 
@@ -27,24 +29,30 @@ class Analytcs extends Component {
                 this.setState({ logs: r })
                 this.getChartBarData();
                 this.getChartDoughnutData();
-                //this.getChartMultBarData();
-            });
+            }
+        );
+
+        //testing purposes
+        let owner = "amaggi";
+        /*LoggerService.getBy(owner)
+            .then(r => {
+                this.setState({ logsOwner: r })
+                this.getChartMultBarData();
+
+            }
+        );*/
     };
 
     _dynamicColors = () => {
-        let rgba;
         let r = Math.floor(Math.random() * 255);
         let g = Math.floor(Math.random() * 255);
         let b = Math.floor(Math.random() * 255);
         let a = 0.7;
-        rgba = `rgba(${r},${g},${b},${a})`;
-        console.log(rgba);
-        return rgba;
+        return `rgba(${r},${g},${b},${a})`;
 
     };
 
     _setColors = (c) => {
-        debugger;
         let colors = [];
         for (let index = 0; index < c; index++) {
             colors.push(this._dynamicColors());
@@ -124,18 +132,74 @@ class Analytcs extends Component {
         this.setState({ doughnut: chart })
     }
 
+    getChartMultBarData() {
+        let owner = "amaggi";
+
+
+
+
+        //call the endpoint
+        let filter = "";
+        let processes = []
+        let owners = [];
+        //criar um obj processes com o filtro de usuário, depois recuperar os usuários, e a quantidade
+        //a quantidade de datasets será de acordo com a quantidade de processos
+
+        let users = Array.from(new Set(this.state.logsOwner.map(item => item.owner)));
+        owners.map(it => processes.push(this.state.logs.filter(value => value.owner == it).length));
+
+
+
+
+        let data =
+        {
+            labels: owners,
+            //add more dataset to have more bars (i.e. for each process)
+            datasets: [
+                {
+                    //label: 'Population',
+                    data: [processes],
+                    backgroundColor: 'rgba(95, 174, 95, 0.6)'
+
+                }
+            ]
+        }
+
+
+        let chart = <MultBar
+            barData={data}
+            text="Processos por usuário"
+            legendPosition="bottom"
+            color='rgba(95, 174, 95, 0.6)'
+            backgroundColor='rgba(95, 174, 95, 0.6)'
+        />
+
+        this.setState({ multBar: chart })
+    }
+
     render() {
         return (
             <div className="App">
                 <div className="App-header">
                 </div>
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
-                    <div id='barChart'  style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    <div id='barChart' style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         {this.state.bar}
                     </div>
                     <div id="doughnutChart" style={{ marginLeft: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         {this.state.doughnut}
-                    </div>                   
+                    </div>
+                </div>
+                <div style={{ width: 'auto', flexDirection: 'row' }}>
+                    <div id='barChart' style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>        
+                    {//https://v0.material-ui.com/#/components/select-field}
+                        <SelectField
+                            floatingLabelText="Frequency"
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                        />                
+                        {/*this.state.multBar*/}
+                    </div>
                 </div>
 
 
