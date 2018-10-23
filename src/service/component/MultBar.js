@@ -20,7 +20,7 @@ class MultBar extends Component {
 
   render() {
     return (
-      <div className="chart">
+      <div className="multBar">
         <Bar
           data={this.state.multBarData}
           options={{

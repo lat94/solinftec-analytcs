@@ -4,20 +4,25 @@ class TemplateLoggerSevice {
     constructor(uri) {
         this.uri = uri;
         this.storageKey = 'stg-' + uri.replace('/', '');
+        //this.filter = filter;
     }   
 
     getLoggerUrl() {
         return HttpService.getLoggerUrl();
     }
 
+    getFilterSuffix() {
+        return HttpService.getFilterSuffix();
+    }
+
     getAll() {
         return HttpService.make(this.getLoggerUrl()).get(this.uri);
     }
 
-
-    /*getBy(filter) {
-        return HttpService.make().post(this.uri, data);
-    }*/
+    postByOwner(filter) {
+        return HttpService.make(this.getLoggerUrl())
+                          .post("/logger/filter", {"owner": filter});
+    }
 
     save(data) {
         return HttpService.make().post(this.uri, data);

@@ -25,22 +25,21 @@ class Analytcs extends Component {
     componentWillMount() {
 
         LoggerService.getAllLogs()
-            .then(r => {
-                this.setState({ logs: r })
+            .then(r => {                
+                this.setState({ logs: r });
                 this.getChartBarData();
                 this.getChartDoughnutData();
             }
         );
 
-        //testing purposes
-        let owner = "amaggi";
-        /*LoggerService.getBy(owner)
+        let filter = "vanguarda_eng";
+        LoggerService.getLogsBy(filter)
             .then(r => {
                 this.setState({ logsOwner: r })
                 this.getChartMultBarData();
 
             }
-        );*/
+        );
     };
 
     _dynamicColors = () => {
@@ -49,7 +48,6 @@ class Analytcs extends Component {
         let b = Math.floor(Math.random() * 255);
         let a = 0.7;
         return `rgba(${r},${g},${b},${a})`;
-
     };
 
     _setColors = (c) => {
@@ -62,6 +60,7 @@ class Analytcs extends Component {
 
     //single dataset
     getChartBarData() {
+        debugger;
         //call the endpoint
         let filter = "";
 
@@ -102,7 +101,6 @@ class Analytcs extends Component {
         let filter = "";
 
         let processes = Array.from(new Set(this.state.logs.map(item => item.process)));
-        debugger;
         let values = []
         processes.map(it => values.push(this.state.logs.filter(value => value.process == it).length));
         let colors = this._setColors(values.length);
@@ -133,27 +131,32 @@ class Analytcs extends Component {
     }
 
     getChartMultBarData() {
+        debugger;
         let owner = "amaggi";
-
-
-
 
         //call the endpoint
         let filter = "";
         let processes = []
         let owners = [];
+        let users = [];
         //criar um obj processes com o filtro de usuário, depois recuperar os usuários, e a quantidade
-        //a quantidade de datasets será de acordo com a quantidade de processos
+        //a quantidade de datasets será de acordo com a quantidade de processos        
 
-        let users = Array.from(new Set(this.state.logsOwner.map(item => item.owner)));
-        owners.map(it => processes.push(this.state.logs.filter(value => value.owner == it).length));
+        users = Array.from(new Set(this.state.logsOwner.map(item => item.user)));
+        owners = Array.from(new Set(this.state.logsOwner.map(item => item.owner)));
+        processes = Array.from(new Set(this.state.logsOwner.map(item => item.process)));
 
+        console.log('====================================');
 
+        console.log(users);
+        console.log(owners);
+        console.log(processes);
 
+        console.log('====================================');
 
         let data =
         {
-            labels: owners,
+            labels: users,
             //add more dataset to have more bars (i.e. for each process)
             datasets: [
                 {
@@ -167,7 +170,7 @@ class Analytcs extends Component {
 
 
         let chart = <MultBar
-            barData={data}
+            multBarData={data}
             text="Processos por usuário"
             legendPosition="bottom"
             color='rgba(95, 174, 95, 0.6)'
@@ -191,14 +194,13 @@ class Analytcs extends Component {
                     </div>
                 </div>
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
-                    <div id='barChart' style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>        
-                    {//https://v0.material-ui.com/#/components/select-field}
+                    <div id='multBbarChart' style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>        
                         <SelectField
                             floatingLabelText="Frequency"
                             value={this.state.value}
                             onChange={this.handleChange}
                         />                
-                        {/*this.state.multBar*/}
+                        {this.state.multBar}
                     </div>
                 </div>
 

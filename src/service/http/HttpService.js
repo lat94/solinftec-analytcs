@@ -1,6 +1,7 @@
 import history from '../../service/router/History';
 const API_URL = "http://localhost:4212/v1";
 const LOGGER_URL = "https://sgpa-logger-api.saas-solinftec.com"
+const FILTER_SUFFIX = "filter";
 
 /**
  * Abstraction of the ~GenericHttpRequest~ for each existing url
@@ -8,7 +9,7 @@ const LOGGER_URL = "https://sgpa-logger-api.saas-solinftec.com"
 class HttpService {
 
     static make = (url) =>
-    {
+    {       
         if(!this.HTTP_SERVICE_INSTANCE)
         {
             this.HTTP_SERVICE_INSTANCE = new GenericHttpRequest(url);
@@ -16,14 +17,11 @@ class HttpService {
         return this.HTTP_SERVICE_INSTANCE;
     };
 
-    static getApiUrl= ()=>
-    {
-        return  API_URL;
-    };
+    static getApiUrl = () => API_URL;
 
-    static getLoggerUrl = () => {
-        return LOGGER_URL;
-    }
+    static getLoggerUrl = () => LOGGER_URL;
+
+    static getFilterSuffix = () => FILTER_SUFFIX;
 
 }
 export default HttpService;
@@ -45,7 +43,7 @@ class GenericHttpRequest {
     };
 
     post = (uri, data)=>
-    {
+    {       
         return this.makeRequest('POST', uri, data);
     };
 
