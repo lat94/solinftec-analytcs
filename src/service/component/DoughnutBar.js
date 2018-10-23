@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
 class DoughnutBar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            doughnutData: props.doughnutData
-        }
-    }
+    
 
     static defaultProps = {
 
@@ -22,12 +17,12 @@ class DoughnutBar extends Component {
         return (
             <div className="doughnut">
                 <Doughnut
-                    data={this.state.doughnutData}
+                    data={this.props.doughnutData}
                     options={{
                         title: {
                             display: this.props.displayTitle,
                             text: this.props.text,
-                            fontSize: 25
+                            fontSize: 18
                         },
                         legend: {
                             display: this.props.displayLegend,

@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 class ChartBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      barData: props.barData
-    }
-  }
+  
 
   static defaultProps = {
 
@@ -22,12 +17,12 @@ class ChartBar extends Component {
     return (
       <div className="chart">
         <Bar
-          data={this.state.barData}
+          data={this.props.barData}
           options={{
             title: {
               display: this.props.displayTitle,
               text: this.props.text,
-              fontSize: 25
+              fontSize: 18
             },
             legend: {
               display: this.props.displayLegend,

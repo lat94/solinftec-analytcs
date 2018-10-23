@@ -9,6 +9,7 @@ import _ from 'lodash';
 import DoughnutBar from '../service/component/DoughnutBar';
 import MultBar from '../service/component/MultBar';
 import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 
 class Analytcs extends Component {
@@ -25,23 +26,53 @@ class Analytcs extends Component {
     componentWillMount() {
 
         LoggerService.getAllLogs()
-            .then(r => {                
+            .then(r => {
                 this.setState({ logs: r });
                 this.getChartBarData();
                 this.getChartDoughnutData();
             }
-        );
+            );
 
-        let filter = "vanguarda_eng";
-        LoggerService.getLogsBy(filter)
-            .then(r => {
-                this.setState({ logsOwner: r })
-                this.getChartMultBarData();
-
-            }
-        );
+        this.loadMultBarChart({});
     };
 
+    componentDidMount() {
+
+    };
+
+    loadMultBarChart({ owner = "amaggi" }) {
+        LoggerService.getLogsBy(owner)
+            .then(response => {
+                this.setState({ logsOwner: response })
+                this.getChartMultBarData(response);
+                console.log("====response====");
+                console.log(response);
+                console.log("================");
+
+
+            });
+    }
+
+    //load the items of the select
+    loadMenuItem() {
+        if (!!this.state.logs) {
+            let owners = Array.from(new Set(this.state.logs.map(item => item.owner)));
+            return owners.map((owner, index) => <MenuItem value={owner} primaryText={owner} />);
+        }
+    }
+
+    //watch changes in the select
+    handleChange = (event, index, value) => {
+        console.log("==");
+        console.log(event, index, value);
+        console.log("============");
+
+        this.setState({ value });
+        this.loadMultBarChart({ "owner": value });
+    }
+
+
+    //generate random RGBA
     _dynamicColors = () => {
         let r = Math.floor(Math.random() * 255);
         let g = Math.floor(Math.random() * 255);
@@ -50,6 +81,7 @@ class Analytcs extends Component {
         return `rgba(${r},${g},${b},${a})`;
     };
 
+    //return c colors
     _setColors = (c) => {
         let colors = [];
         for (let index = 0; index < c; index++) {
@@ -58,13 +90,15 @@ class Analytcs extends Component {
         return colors;
     }
 
+
+
     //single dataset
     getChartBarData() {
-        debugger;
+
         //call the endpoint
         let filter = "";
 
-        let owners = Array.from(new Set(this.state.logs.map(item => item.owner)));
+        let owners = Array.from(new Set(this.state.logs.map(item => item.owner).filter(item => item != undefined)));
         let values = []
         owners.map(it => values.push(this.state.logs.filter(value => value.owner == it).length))
 
@@ -83,6 +117,8 @@ class Analytcs extends Component {
             ]
         }
 
+        console.log(data);
+
 
         let chart = <ChartBar
             barData={data}
@@ -100,7 +136,12 @@ class Analytcs extends Component {
         //call the endpoint
         let filter = "";
 
-        let processes = Array.from(new Set(this.state.logs.map(item => item.process)));
+        let processes = Array.from(new Set(this.state.logs.map(item => item.process).filter(item => item != undefined)));
+        console.log("=====processes=========");
+        console.log(processes);
+        console.log("===============");
+
+
         let values = []
         processes.map(it => values.push(this.state.logs.filter(value => value.process == it).length));
         let colors = this._setColors(values.length);
@@ -130,43 +171,86 @@ class Analytcs extends Component {
         this.setState({ doughnut: chart })
     }
 
-    getChartMultBarData() {
-        debugger;
-        let owner = "amaggi";
 
+
+    getChartMultBarData(response) {
         //call the endpoint
         let filter = "";
-        let processes = []
-        let owners = [];
-        let users = [];
+
         //criar um obj processes com o filtro de usuário, depois recuperar os usuários, e a quantidade
         //a quantidade de datasets será de acordo com a quantidade de processos        
 
-        users = Array.from(new Set(this.state.logsOwner.map(item => item.user)));
-        owners = Array.from(new Set(this.state.logsOwner.map(item => item.owner)));
-        processes = Array.from(new Set(this.state.logsOwner.map(item => item.process)));
+        let users = Array.from(new Set(response.map(item => item.user).filter(item => item != undefined)));
+        let processes = Array.from(new Set(response.map(item => item.process)));
+        let colors = this._setColors(3);
 
-        console.log('====================================');
+        console.log("getChartMultBarData:response");
+        console.log(response);
+        console.log("============");
 
-        console.log(users);
-        console.log(owners);
-        console.log(processes);
+        let datasetList = _.map(
+            _.groupBy(response, data => [data["user"]]), user =>
+                _.groupBy(user, process => [process["process"]])
+        );
 
-        console.log('====================================');
+        let datasetListNew = [];
+
+        console.log("======datasetList=======");
+        console.log(datasetList);
+        console.log("============");
+        datasetList.forEach((item) => {
+            datasetListNew.push({
+                "label": datasetList.map((item)  => item ),
+                "backgroundColor": this._dynamicColors(),
+                "data": Array.from(datasetList.map(item => item.length))
+
+            })
+
+        });
+
+        console.log("=====datasetListNew=========");
+        console.log(datasetListNew);        
+        console.log("==============");
+
+        
 
         let data =
-        {
+        {            
             labels: users,
-            //add more dataset to have more bars (i.e. for each process)
-            datasets: [
-                {
-                    //label: 'Population',
-                    data: [processes],
-                    backgroundColor: 'rgba(95, 174, 95, 0.6)'
+            //datasets: []
 
-                }
-            ]
+
+            datasets: [{
+                label: processes[0],
+                backgroundColor: colors[0],
+                data: [
+                    2045,
+                    1230,
+                    2325
+                ]
+            }, {
+                label: processes[1],
+                backgroundColor: colors[1],
+                data: [
+                    10,
+                    2368,
+                    5134
+
+                ]
+            }, {
+                label: processes[2],
+                backgroundColor: colors[2],
+                data: [
+                    986,
+                    5236,
+                    3521
+
+                ]
+            }]
+
         }
+
+        //let select = 
 
 
         let chart = <MultBar
@@ -186,22 +270,27 @@ class Analytcs extends Component {
                 <div className="App-header">
                 </div>
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
-                    <div id='barChart' style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    <div id='barChart' style={{ marginRight: '2px', width: '45%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         {this.state.bar}
                     </div>
-                    <div id="doughnutChart" style={{ marginLeft: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    <div id="doughnutChart" style={{ marginLeft: '2px', width: '45%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         {this.state.doughnut}
                     </div>
                 </div>
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
-                    <div id='multBbarChart' style={{ marginRight: '2px', width: 600, flex: 1, display: 'inline-block', backgroundColor: 'white' }}>        
+                    <div id='multBarChart' style={{ marginRight: '2px', width: '80%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         <SelectField
-                            floatingLabelText="Frequency"
+                            floatingLabelText="Owner"
                             value={this.state.value}
                             onChange={this.handleChange}
-                        />                
+                        >
+                            {this.loadMenuItem()}
+                        </SelectField>
                         {this.state.multBar}
                     </div>
+                    <div id='anyChart' style={{ marginLeft: '2px', width: '45%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    </div>
+
                 </div>
 
 
