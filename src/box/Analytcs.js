@@ -45,11 +45,6 @@ class Analytcs extends Component {
             .then(response => {
                 this.setState({ logsOwner: response })
                 this.getChartMultBarData(response);
-                console.log("====response====");
-                console.log(response);
-                console.log("================");
-
-
             });
     }
 
@@ -203,7 +198,6 @@ class Analytcs extends Component {
                 "label": datasetList.map((item)  => item ),
                 "backgroundColor": this._dynamicColors(),
                 "data": Array.from(datasetList.map(item => item.length))
-
             })
 
         });
@@ -212,39 +206,77 @@ class Analytcs extends Component {
         console.log(datasetListNew);        
         console.log("==============");
 
-        
+        let teste = [];
+        process.forEach(element => {
+            teste.push(response.map((item) => {
+                return {
+                    "label": item.process,
+                    "backgroundColor": this._dynamicColors(),
+                    "data": [item]
 
+                };
+            }))                       
+                
+        });
+        
+        
         let data =
         {            
             labels: users,
             //datasets: []
 
+            //composição do obj:
+            //quantidade de dataset será de acordo com a quantidade de usuários.
+            //os labels serão cada processo
+            //os datas[] serão a length da quantiadade de processos para esse usuário
+            /*{
+                //esse processo(label) terá essa quantidade (data), fazer isso para cada processo e então o dataset estará feito
+                label: "Array.from(datasetList.filter((item) => {item.process}))[0]",
+                backgroundColor: "this.__dynamicColors()",
+                data: [ Array.from(datasetList.filter((item) => {item.process})).length ]  
+                        
+                ]
+            }*/
 
             datasets: [{
                 label: processes[0],
                 backgroundColor: colors[0],
                 data: [
-                    2045,
-                    1230,
-                    2325
+                    150,
+                    200,
+                    75,
+                    40,
                 ]
             }, {
                 label: processes[1],
                 backgroundColor: colors[1],
                 data: [
                     10,
-                    2368,
-                    5134
+                    244,
+                    101,
+                    23,
+                    13
+                    
 
                 ]
             }, {
                 label: processes[2],
                 backgroundColor: colors[2],
                 data: [
-                    986,
-                    5236,
-                    3521
+                    4,
+                    22,
+                    215,
+                    471,
+                    2
 
+                ]
+            }, {
+                label: processes[3],
+                backgroundColor: colors[3],
+                data: [
+                    15,
+                    6,
+                    87
                 ]
             }]
 

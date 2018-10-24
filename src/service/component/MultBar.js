@@ -6,7 +6,7 @@ class MultBar extends Component {
   static defaultProps = {
     displayTitle: true,
     //legend settings
-    displayLegend: false,
+    displayLegend: true,
     legendPosition: 'right',
     //location:'City'    
   }
