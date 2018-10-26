@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
-class ChartBar extends Component {
+class LineBar extends Component {
   
 
   static defaultProps = {
@@ -10,17 +10,19 @@ class ChartBar extends Component {
     //legend settings
     displayLegend: false,
     legendPosition: 'right',
-    responsive: true,
+    //responsive: true,
 
     //location:'City'
   }
 
   render() {
     return (
-      <div className="chart">
-        <Bar
-          data={this.props.barData}
+      <div className="line">
+        <Line
+          data={this.props.lineData}
           options={{
+            fill: false,
+            display: true,
             title: {
               display: this.props.displayTitle,
               text: this.props.text,
@@ -37,4 +39,4 @@ class ChartBar extends Component {
   }
 }
 
-export default ChartBar;
+export default LineBar;

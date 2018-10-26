@@ -10,6 +10,8 @@ class DoughnutBar extends Component {
         //legend settings
         displayLegend: true,
         legendPosition: 'right',
+        responsive: true,
+
         //location:'City'
     }
 

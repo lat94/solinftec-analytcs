@@ -8,6 +8,7 @@ import LoggerService from '../service/service/LoggerService';
 import _ from 'lodash';
 import DoughnutBar from '../service/component/DoughnutBar';
 import MultBar from '../service/component/MultBar';
+import LineBar from '../service/component/LineBar';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
@@ -19,19 +20,23 @@ class Analytcs extends Component {
         this.state = {
             bar: null,
             doughnut: null,
-            multBar: null
+            multBar: null,
+            lineBar: null
+
         }
     };
 
     componentWillMount() {
 
         LoggerService.getAllLogs()
-            .then(r => {
-                this.setState({ logs: r });
+            .then(response => {
+                this.setState({ logs: response });
                 this.getChartBarData();
                 this.getChartDoughnutData();
+                this.getChartLineData();
             }
             );
+        
 
         this.loadMultBarChart({});
     };
@@ -45,7 +50,8 @@ class Analytcs extends Component {
             .then(response => {
                 this.setState({ logsOwner: response })
                 this.getChartMultBarData(response);
-            });
+            }
+            );
     }
 
     //load the items of the select
@@ -112,7 +118,6 @@ class Analytcs extends Component {
             ]
         }
 
-        console.log(data);
 
 
         let chart = <ChartBar
@@ -179,10 +184,6 @@ class Analytcs extends Component {
         let processes = Array.from(new Set(response.map(item => item.process).filter(item => item != undefined)));
         let colors = this._setColors(3);
 
-        console.log("=====response=======");
-        console.log(response);
-        console.log("============");
-
         let datasetList = _.map(
             _.groupBy(response, data => [data["user"]]), user =>
                 _.groupBy(user, process => [process["process"]])
@@ -209,7 +210,7 @@ class Analytcs extends Component {
 
 
         //JACKPOT
-        let dataList = [];
+        /*let dataList = [];
         processByUser.forEach((item, index) => {
             let process = Object.keys(item)[index];
             dataList.push({
@@ -218,18 +219,18 @@ class Analytcs extends Component {
                     item.process
                 ]
             });
-        });
-       
-            
+        });*/
 
-            //processByUser.push(item[index].filter((item, index) => item.user == users[index]))
-       
+
+
+        //processByUser.push(item[index].filter((item, index) => item.user == users[index]))
+
 
         console.log("===============");
 
         let data =
         {
-            labels: users,           
+            labels: users,
             datasets: [{
                 label: processes[0],
                 backgroundColor: colors[0],
@@ -238,7 +239,7 @@ class Analytcs extends Component {
                     5,
                     9,
                     13,
-                    17   
+                    17
                 ]
             }, {
                 label: processes[1],
@@ -249,7 +250,7 @@ class Analytcs extends Component {
                     10,
                     14,
                     18
-                ]   
+                ]
             }, {
                 label: processes[2],
                 backgroundColor: colors[2],
@@ -288,6 +289,65 @@ class Analytcs extends Component {
         this.setState({ multBar: chart })
     }
 
+
+    getChartLineData() {
+        let predefinedDates = {};
+        predefinedDates.lastWeek = 0;
+
+        //call the endpoint
+        let filter = "";
+        let values = []
+
+        let daysRange = Array.from(new Set(this.state.logs.map(item => item.day_range).filter(item => item != undefined)));
+        let processes = Array.from(new Set(this.state.logs.map(item => item.process).filter(item => item != undefined)));
+
+        console.log("=daysRange============processes=");
+        console.log(daysRange);
+        console.log(processes);        
+        console.log("==============");
+
+        
+
+
+        let data =
+        {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            //add more dataset to have more bars (i.e. for each process)
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: this._dynamicColors(),
+                data: [
+                    123,
+                    345,
+                    123,
+                    346
+                ],
+                fill: true,
+            }]
+        }
+
+
+
+        let chart = <LineBar
+            lineData={data}
+            text="Processo mais pedido por data"
+            legendPosition="bottom"
+            color='rgba(95, 174, 95, 0.6)'
+            backgroundColor='rgba(95, 174, 95, 0.6)'
+        />
+
+        this.setState({ lineBar: chart })
+
+        console.log("=====chart=====");
+        console.log(chart);
+        console.log("==========");
+
+
+
+
+
+    }
+
     render() {
         return (
             <div className="App">
@@ -302,7 +362,7 @@ class Analytcs extends Component {
                     </div>
                 </div>
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
-                    <div id='multBarChart' style={{ marginRight: '2px', width: '80%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    <div id='multBarChart' style={{ marginBottom: '2px', marginRight: '2px', width: '80%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         <SelectField
                             floatingLabelText="Owner"
                             value={this.state.value}
@@ -312,7 +372,8 @@ class Analytcs extends Component {
                         </SelectField>
                         {this.state.multBar}
                     </div>
-                    <div id='anyChart' style={{ marginLeft: '2px', width: '45%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    <div id='lineChart' style={{ marginTop: '2px', marginLeft: '2px', width: '80%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                        {this.state.lineBar}
                     </div>
 
                 </div>
