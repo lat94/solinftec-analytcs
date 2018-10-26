@@ -21,7 +21,7 @@ class LineBar extends Component {
         <Line
           data={this.props.lineData}
           options={{
-            fill: false,
+            fill: true,
             display: true,
             title: {
               display: this.props.displayTitle,

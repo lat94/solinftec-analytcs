@@ -5,7 +5,7 @@ class TemplateLoggerSevice {
         this.uri = uri;
         this.storageKey = 'stg-' + uri.replace('/', '');
         //this.filter = filter;
-    }   
+    }
 
     getLoggerUrl() {
         return HttpService.getLoggerUrl();
@@ -21,7 +21,12 @@ class TemplateLoggerSevice {
 
     postByOwner(filter) {
         return HttpService.make(this.getLoggerUrl())
-                          .post("/logger/filter", {"owner": filter});
+            .post("/logger/filter", { "owner": filter });
+    }
+
+    postUserByProcess(filter) {
+        return HttpService.make(this.getLoggerUrl())
+            .post("/chart/user-by-process", { "owner": filter });
     }
 
     save(data) {

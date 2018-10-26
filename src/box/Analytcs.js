@@ -33,25 +33,29 @@ class Analytcs extends Component {
                 this.setState({ logs: response });
                 this.getChartBarData();
                 this.getChartDoughnutData();
-                this.getChartLineData();
-            }
-            );
-        
+            });
 
-        this.loadMultBarChart({});
+
+        this.loadChartPerOwner({});
     };
 
     componentDidMount() {
 
     };
 
-    loadMultBarChart({ owner = "vanguarda_eng" }) {
+    loadChartPerOwner({ owner = "vanguarda_eng" }) {
         LoggerService.getLogsBy(owner)
             .then(response => {
                 this.setState({ logsOwner: response })
                 this.getChartMultBarData(response);
-            }
-            );
+                this.getChartLineData(response);
+            });
+
+        LoggerService.getLogsUserByProcess(owner)
+            .then(response => {
+                this.setState({ logsUserByProcess: response })
+                //this.getChartLineData(response);
+            });
     }
 
     //load the items of the select
@@ -69,7 +73,7 @@ class Analytcs extends Component {
         console.log("============");
 
         this.setState({ value });
-        this.loadMultBarChart({ "owner": value });
+        this.loadChartPerOwner({ "owner": value });
     }
 
 
@@ -176,6 +180,8 @@ class Analytcs extends Component {
     getChartMultBarData(response) {
         //call the endpoint
         let filter = "";
+        
+        
 
         //criar um obj processes com o filtro de usuário, depois recuperar os usuários, e a quantidade
         //a quantidade de datasets será de acordo com a quantidade de processos        
@@ -210,8 +216,8 @@ class Analytcs extends Component {
 
 
         //JACKPOT
-        /*let dataList = [];
-        processByUser.forEach((item, index) => {
+        let dataList = [];
+        /*processByUser.forEach((item, index) => {
             let process = Object.keys(item)[index];
             dataList.push({
                 "label": process,
@@ -290,39 +296,50 @@ class Analytcs extends Component {
     }
 
 
-    getChartLineData() {
+    getChartLineData(response) {
         let predefinedDates = {};
-        predefinedDates.lastWeek = 0;
+
+        console.log("=======getChartLineData.response========");
+        console.log(response);
+        console.log("===============");
 
         //call the endpoint
         let filter = "";
         let values = []
 
-        let daysRange = Array.from(new Set(this.state.logs.map(item => item.day_range).filter(item => item != undefined)));
-        let processes = Array.from(new Set(this.state.logs.map(item => item.process).filter(item => item != undefined)));
+        let daysRange = Array.from(response.map(item => item.day_range).filter(item => item != undefined));
+        let processes = Array.from(new Set(response.map(item => item.process).filter(item => item != undefined)));
 
-        console.log("=daysRange============processes=");
+        //make a method
+        predefinedDates.thisMonth = daysRange.filter(item => item == (30 || 31 || 29 || 28)).length;
+        predefinedDates.lastWeek = daysRange.filter(item => item == 7).length;
+        predefinedDates.lastTwoDays = daysRange.filter(item => item == 2).length;
+        predefinedDates.yesterday = daysRange.filter(item => item == 1).length;
+        predefinedDates.today = daysRange.filter(item => item == 0).length;
+
+        let lineLabel = Array.from(Object.keys(predefinedDates));
+        let lineDataSet = Object.keys(predefinedDates).map(item => predefinedDates[item]);
+
+
+
+
+
+        console.log("======daysRange=======");
         console.log(daysRange);
-        console.log(processes);        
+        console.log(predefinedDates);
         console.log("==============");
 
-        
+
 
 
         let data =
         {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            //add more dataset to have more bars (i.e. for each process)
+            labels: lineLabel,
+
+            //add more dataset to have() more bars (i.e. for each process)
             datasets: [{
-                label: 'My First dataset',
-                backgroundColor: this._dynamicColors(),
-                data: [
-                    123,
-                    345,
-                    123,
-                    346
-                ],
-                fill: true,
+                backgroundColor: this._setColors(1),
+                data: lineDataSet,
             }]
         }
 
@@ -337,15 +354,6 @@ class Analytcs extends Component {
         />
 
         this.setState({ lineBar: chart })
-
-        console.log("=====chart=====");
-        console.log(chart);
-        console.log("==========");
-
-
-
-
-
     }
 
     render() {
@@ -362,7 +370,7 @@ class Analytcs extends Component {
                     </div>
                 </div>
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
-                    <div id='multBarChart' style={{ marginBottom: '2px', marginRight: '2px', width: '80%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    <div style={{ width: 'auto', flexDirection: 'row', width: '90%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         <SelectField
                             floatingLabelText="Owner"
                             value={this.state.value}
@@ -370,9 +378,13 @@ class Analytcs extends Component {
                         >
                             {this.loadMenuItem()}
                         </SelectField>
+                    </div>
+
+                    <div id='multBarChart' style={{ marginRight: '2px', width: '45%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+
                         {this.state.multBar}
                     </div>
-                    <div id='lineChart' style={{ marginTop: '2px', marginLeft: '2px', width: '80%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
+                    <div id='lineChart' style={{ marginLeft: '2px', width: '45%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         {this.state.lineBar}
                     </div>
 

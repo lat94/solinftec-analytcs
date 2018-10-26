@@ -11,6 +11,8 @@ class LoggerService
 
     getAllLogs = () => this.templateLogger.getAll();
     getLogsBy = (filter) => this.templateLogger.postByOwner(filter);
+    getLogsUserByProcess = (filter) => this.templateLogger.postUserByProcess(filter);
+
 
 }
 export default new LoggerService();
