@@ -44,6 +44,7 @@ class Analytcs extends Component {
     };
 
     loadChartPerOwner({ owner = "vanguarda_eng" }) {
+
         LoggerService.getLogsBy(owner)
             .then(response => {
                 this.setState({ logsOwner: response })
@@ -100,7 +101,6 @@ class Analytcs extends Component {
     //single dataset
     getChartBarData() {
 
-        //call the endpoint
         let filter = "";
 
         let owners = Array.from(new Set(this.state.logs.map(item => item.owner).filter(item => item != undefined)));
@@ -137,7 +137,6 @@ class Analytcs extends Component {
 
     //single dataset
     getChartDoughnutData() {
-        //call the endpoint
         let filter = "";
 
         let processes = Array.from(new Set(this.state.logs.map(item => item.process).filter(item => item != undefined)));
@@ -178,111 +177,38 @@ class Analytcs extends Component {
 
 
     getChartMultBarData(response) {
-        //call the endpoint
-        let filter = "";
-        
-        
+        let filter = "";     
 
-        //criar um obj processes com o filtro de usuário, depois recuperar os usuários, e a quantidade
-        //a quantidade de datasets será de acordo com a quantidade de processos        
-
+        let logsUserByProcess = this.state.logsUserByProcess;
         let users = Array.from(new Set(response.map(item => item.user).filter(item => item != undefined)));
-        let processes = Array.from(new Set(response.map(item => item.process).filter(item => item != undefined)));
-        let colors = this._setColors(3);
+        let usersByProcess = Array.from(new Set(logsUserByProcess.map(it => it.user).filter(item => item != undefined)))
+        let processes =  Object.keys(logsUserByProcess[0].process);
+        let result  = []        
 
-        let datasetList = _.map(
-            _.groupBy(response, data => [data["user"]]), user =>
-                _.groupBy(user, process => [process["process"]])
-        );
+        processes.forEach(prc => 
+        {
+            let item = 
+            { 
+                label: prc,
+                backgroundColor: this._dynamicColors(),
+                data: [ ] 
+            };
 
-        //.filter(item => item.process == "report-general").length
-
-        let userData = _.groupBy(response, data => [data["user"]]);
-        let processData = _.groupBy(response, process => [process["process"]]);
-
-        console.log("=======datasetList========");
-        console.log(datasetList);
-        console.log("=======userData========");
-        console.log(userData);
-        console.log("=======processData========");
-        console.log(processData);
-        console.log("===============");
-
-
-        let dataFromList = [];
-        let processByUser = [];
-
-        console.log("======baguncinha=========");
-
-
-        //JACKPOT
-        let dataList = [];
-        /*processByUser.forEach((item, index) => {
-            let process = Object.keys(item)[index];
-            dataList.push({
-                "label": process,
-                "data":[
-                    item.process
-                ]
+            usersByProcess.forEach(user =>
+            {
+                logsUserByProcess.filter(it => it.user == [user])
+                        .forEach(person => item.data.push(person.process[prc]));
             });
-        });*/
-
-
-
-        //processByUser.push(item[index].filter((item, index) => item.user == users[index]))
-
-
-        console.log("===============");
+        
+            result.push(item);
+        });      
 
         let data =
         {
             labels: users,
-            datasets: [{
-                label: processes[0],
-                backgroundColor: colors[0],
-                data: [
-                    1,
-                    5,
-                    9,
-                    13,
-                    17
-                ]
-            }, {
-                label: processes[1],
-                backgroundColor: colors[1],
-                data: [
-                    2,
-                    6,
-                    10,
-                    14,
-                    18
-                ]
-            }, {
-                label: processes[2],
-                backgroundColor: colors[2],
-                data: [
-                    3,
-                    7,
-                    11,
-                    15,
-                    19
-                ]
-            }, {
-                label: processes[3],
-                backgroundColor: colors[3],
-                data: [
-                    4,
-                    8,
-                    12,
-                    16,
-                    20
-                ]
-            }]
+            datasets: result
 
         }
-
-        //let select = 
-
 
         let chart = <MultBar
             multBarData={data}
@@ -299,11 +225,6 @@ class Analytcs extends Component {
     getChartLineData(response) {
         let predefinedDates = {};
 
-        console.log("=======getChartLineData.response========");
-        console.log(response);
-        console.log("===============");
-
-        //call the endpoint
         let filter = "";
         let values = []
 
@@ -319,18 +240,6 @@ class Analytcs extends Component {
 
         let lineLabel = Array.from(Object.keys(predefinedDates));
         let lineDataSet = Object.keys(predefinedDates).map(item => predefinedDates[item]);
-
-
-
-
-
-        console.log("======daysRange=======");
-        console.log(daysRange);
-        console.log(predefinedDates);
-        console.log("==============");
-
-
-
 
         let data =
         {
@@ -372,6 +281,7 @@ class Analytcs extends Component {
                 <div style={{ width: 'auto', flexDirection: 'row' }}>
                     <div style={{ width: 'auto', flexDirection: 'row', width: '90%', flex: 1, display: 'inline-block', backgroundColor: 'white' }}>
                         <SelectField
+                            style={{ float: "left" }}
                             floatingLabelText="Owner"
                             value={this.state.value}
                             onChange={this.handleChange}
