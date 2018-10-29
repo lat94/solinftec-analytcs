@@ -27,8 +27,7 @@ class PrivateContainer extends Component {
             {
                 switch (this.path)
                 {
-                    //case "/alice/text-to-voice" : return <TextToVoice/>
-                    case "/alice/analytcs": return <Analytcs/>
+                    case "/solinftec/analytcs": return <Analytcs/>
                     default : return <NotFound/>;
                 }
             }

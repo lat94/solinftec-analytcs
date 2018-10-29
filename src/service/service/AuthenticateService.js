@@ -6,7 +6,7 @@ class AuthenticateService
     {
         //inicia auth lib
         this.helper = new Auth();
-        this.helper.setOrigin('alice-marketing-voice');
+        this.helper.setOrigin('solinftec-analytics');
     }
 
     removeTokenFromStorage()

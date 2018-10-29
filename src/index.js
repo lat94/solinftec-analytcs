@@ -21,7 +21,7 @@ const Main = () => (
             <Router history={history}>
                 <div>
                     <Route exact path='/' component={Login} />
-                    <PrivateRoute path='/alice/*' component={PrivateContainer} />
+                    <PrivateRoute path='/solinftec/*' component={PrivateContainer} />
                 </div>
             </Router>
         </BrowserRouter>

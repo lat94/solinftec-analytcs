@@ -23,7 +23,7 @@ class Login extends Component {
                       .then(token => 
                       {
                           console.log(token)
-                          router.push('/alice/analytcs'); 
+                          router.push('/solinftec/analytcs'); 
                       })
                       .catch(error =>
                       {
