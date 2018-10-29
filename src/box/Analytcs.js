@@ -54,9 +54,11 @@ class Analytcs extends Component {
 
         LoggerService.getLogsUserByProcess(owner)
             .then(response => {
-                this.setState({ logsUserByProcess: response })
-                //this.getChartLineData(response);
+                response.forEach(item => delete item.process["report-today"]);
+                this.setState({ logsUserByProcess: response });
             });
+
+        
     }
 
     //load the items of the select
@@ -140,9 +142,6 @@ class Analytcs extends Component {
         let filter = "";
 
         let processes = Array.from(new Set(this.state.logs.map(item => item.process).filter(item => item != undefined)));
-        console.log("=====processes=========");
-        console.log(processes);
-        console.log("===============");
 
 
         let values = []
@@ -180,10 +179,16 @@ class Analytcs extends Component {
         let filter = "";     
 
         let logsUserByProcess = this.state.logsUserByProcess;
+
         let users = Array.from(new Set(response.map(item => item.user).filter(item => item != undefined)));
         let usersByProcess = Array.from(new Set(logsUserByProcess.map(it => it.user).filter(item => item != undefined)))
         let processes =  Object.keys(logsUserByProcess[0].process);
-        let result  = []        
+        let result  = []       
+        
+        
+        console.log("=========getChartMultBarData.processes=============");
+        console.log(processes);
+        console.log("======================");
 
         processes.forEach(prc => 
         {
@@ -236,7 +241,8 @@ class Analytcs extends Component {
         predefinedDates.lastWeek = daysRange.filter(item => item == 7).length;
         predefinedDates.lastTwoDays = daysRange.filter(item => item == 2).length;
         predefinedDates.yesterday = daysRange.filter(item => item == 1).length;
-        predefinedDates.today = daysRange.filter(item => item == 0).length;
+        //today removed
+        //predefinedDates.today = daysRange.filter(item => item == 0).length;
 
         let lineLabel = Array.from(Object.keys(predefinedDates));
         let lineDataSet = Object.keys(predefinedDates).map(item => predefinedDates[item]);
@@ -283,6 +289,7 @@ class Analytcs extends Component {
                         <SelectField
                             style={{ float: "left" }}
                             floatingLabelText="Owner"
+                            floatingLabelStyle={{color: 'black'}}
                             value={this.state.value}
                             onChange={this.handleChange}
                         >
